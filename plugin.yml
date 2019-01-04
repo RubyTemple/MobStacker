@@ -1,6 +1,0 @@
-name: Snow
-main: varion\Snow\Snow
-version: 1.0
-author: Varion
-api:
-- 3.0.0
