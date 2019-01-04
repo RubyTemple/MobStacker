@@ -1,0 +1,7 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/TheWalker0/MobStacker
+branches:
+- master
+projects:
+  MobStacker:
+    path: ""
+...
