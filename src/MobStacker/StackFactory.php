@@ -79,19 +79,16 @@ class StackFactory {
 	}
 
 	public static function removeFromStack(Living $entity): bool{
-		//echo "buonsalve";
 		if(!$entity instanceof Player){
 			assert(self::isStack($entity));
 			if(self::decreaseStackSize($entity)){
 				if(self::getStackSize($entity) <= 0) return false;
 				$level = $entity->getLevel();
-				//$count = self::getStackSize($entity);
 				$pos = new Vector3($entity->x, $entity->y, $entity->z);
 				$server = $level->getServer();
 				$server->getPluginManager()->callEvent($ev = new EntityDeathEvent($entity, $entity->getDrops()));
 				foreach($ev->getDrops() as $drops){
 					$level->dropItem($pos, $drops);
-					//echo "buondio";
 				}
 				return true;
 			}
