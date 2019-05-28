@@ -11,9 +11,9 @@ public function onLoad() : void{
 }
 public function onEnable() : void{
     $this->getServer()->getPluginManager()->registerEvents(new StackEvent($this), $this);
-    $this->getLogger()->info("Plugin has been enabled succesfully. Looking for errors. (If no errors found, then you should be fine.");
+    $this->getLogger()->info("Plugin has been enabled succesfully, by TheWalker0.");
 }
 public function onDisable() : void{
-    $this->getLogger()->info("Plugin has been disabled. Did the server stop?");
+    $this->getLogger()->info("Plugin has been disabled made by TheWalker0");
 }
 }
