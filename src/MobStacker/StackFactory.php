@@ -9,6 +9,7 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\Player;
+use slapper\entities\SlapperEntity;
 
 class StackFactory {
 
@@ -79,7 +80,7 @@ class StackFactory {
 	}
 
 	public static function removeFromStack(Living $entity): bool{
-		if(!$entity instanceof Player){
+	    if(!$entity instanceof Player){
 			assert(self::isStack($entity));
 			if(self::decreaseStackSize($entity)){
 				if(self::getStackSize($entity) <= 0) return false;
