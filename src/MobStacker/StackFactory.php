@@ -10,16 +10,18 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\Player;
 use slapper\entities\SlapperEntity;
+use slapper\entities\SlapperHuman;
 
 class StackFactory {
 
 	public const TAG_STACK_DATA = "StackData";
 
 	public static function isStack($entity): bool{
-		if(!$entity instanceof Player){
-			return $entity instanceof Living and (!$entity instanceof ItemEntity) and $entity->namedtag->hasTag(self::TAG_STACK_DATA, CompoundTag::class);
-		}
-
+	    if(!($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
+            if(!$entity instanceof Player){
+                return $entity instanceof Living and (!$entity instanceof ItemEntity) and $entity->namedtag->hasTag(self::TAG_STACK_DATA, CompoundTag::class);
+            }
+        }
 		return false;
 	}
 
@@ -52,7 +54,7 @@ class StackFactory {
 	}
 
 	public static function createStack(Living $entity, $count = 1): bool{
-		if(!$entity instanceof Player){
+		if(!$entity instanceof Player && !($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
 			$nbt = new CompoundTag("StackData", [
 				"Amount" => new IntTag("Amount", $count),
 			]);
@@ -64,7 +66,7 @@ class StackFactory {
 	}
 
 	public static function addToStack(Living $stack, Living $entity): bool{
-		if(!$entity instanceof Player){
+		if(!$entity instanceof Player && !($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
 			if(is_a($entity, get_class($stack)) and $stack !== $entity){
 				if(self::increaseStackSize($stack, self::getStackSize($entity))){
 					$entity->flagForDespawn();
@@ -80,7 +82,7 @@ class StackFactory {
 	}
 
 	public static function removeFromStack(Living $entity): bool{
-	    if(!$entity instanceof Player){
+	    if(!$entity instanceof Player && !($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
 			assert(self::isStack($entity));
 			if(self::decreaseStackSize($entity)){
 				if(self::getStackSize($entity) <= 0) return false;
@@ -101,7 +103,7 @@ class StackFactory {
 	}
 
 	public static function recalculateStackName(Living $entity): bool{
-		if(!$entity instanceof Player){
+		if(!$entity instanceof Player && !($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
 			assert(self::isStack($entity));
 			$count = self::getStackSize($entity);
 			if($count < 0){
@@ -115,7 +117,7 @@ class StackFactory {
 	}
 
 	public static function findNearbyStack(Living $entity, $range = 16){
-		if(!$entity instanceof Player){
+		if(!$entity instanceof Player && !($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
 			$stack = null;
 			$closest = $range;
 			$bb = $entity->getBoundingBox();
@@ -138,7 +140,7 @@ class StackFactory {
 	}
 
 	public static function addToClosestStack(Living $entity, $range = 16): bool{
-		if(!$entity instanceof Player){
+		if(!$entity instanceof Player && !($entity instanceof SlapperEntity) && !($entity instanceof SlapperHuman)){
 			$stack = self::findNearbyStack($entity, $range);
 			if(self::isStack($stack)){
 				if(self::addToStack($stack, $entity)){
@@ -147,13 +149,15 @@ class StackFactory {
 					return true;
 				}
 			}else{
-				if($stack instanceof Living && !$stack instanceof Player){
-					self::createStack($stack);
-					self::addToStack($stack, $entity);
-					self::recalculateStackName($stack);
+			    if (!($stack instanceof SlapperEntity) && !($stack instanceof SlapperHuman)){
+                    if($stack instanceof Living && !$stack instanceof Player){
+                        self::createStack($stack);
+                        self::addToStack($stack, $entity);
+                        self::recalculateStackName($stack);
 
-					return true;
-				}
+                        return true;
+                    }
+                }
 			}
 
 			return false;
